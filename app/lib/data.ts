@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { db, sql } from '@vercel/postgres';
 import {
   CustomerField,
   CustomersTableType,
@@ -8,6 +8,159 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
+import { cookies } from 'next/headers';
+import bcrypt from 'bcrypt';
+
+const client = await db.connect();
+
+export async function getMessages(graduate_id: string, instructor_id: string) {
+  try {
+    const messages = await client.sql`
+      SELECT * 
+      FROM messages
+      WHERE graduate_id = ${graduate_id} AND instructor_id = ${instructor_id}
+      ORDER BY sent_date;
+    `;
+
+    return messages.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch messages data.');
+  }
+}
+
+export async function getOtherInstructors(username: string) {
+  try {
+    // Fetch instructors based on the provided username and accepted requests
+    const instructors = await client.sql`
+      SELECT *
+      FROM instructors
+      WHERE instructor_id::TEXT NOT IN (
+        SELECT instructor_id
+        FROM requests r
+        INNER JOIN graduates g ON r.graduate_id::TEXT = g.graduate_id::TEXT
+        WHERE g.username = ${username}
+      );
+    `;
+    
+    // Return the results, ensure it's an empty array if no instructors found
+    return instructors.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch requested instructor data.');
+  }
+}
+
+export async function getRequestedInstructors(username: string) {
+  try {
+    // Fetch instructors based on the provided username and accepted requests
+    const instructors = await client.sql`
+      SELECT i.*
+      FROM requests r
+      FULL JOIN instructors i ON r.instructor_id::TEXT = i.instructor_id::TEXT
+      FULL JOIN graduates g ON r.graduate_id::TEXT = g.graduate_id::TEXT
+      WHERE g.username = ${username} AND r.status = 'pending';
+    `;
+    
+    // Return the results, ensure it's an empty array if no instructors found
+    return instructors.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch requested instructor data.');
+  }
+}
+
+export async function getAcceptedInstructors(username: string) {
+  try {
+    // Fetch instructors based on the provided username and accepted requests
+    const instructors = await client.sql`
+      SELECT i.*
+      FROM requests r
+      FULL JOIN instructors i ON r.instructor_id::TEXT = i.instructor_id::TEXT
+      FULL JOIN graduates g ON r.graduate_id::TEXT = g.graduate_id::TEXT
+      WHERE g.username = ${username} AND r.status = 'accepted';
+    `;
+    
+    // Return the results, ensure it's an empty array if no instructors found
+    return instructors.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch accepted instructor data.');
+  }
+}
+
+export async function getUser(username: string, usertype: string) {
+  try {
+    if (usertype == 'graduate') {
+      const user = await client.sql`SELECT * FROM graduates WHERE username = ${username};`;
+      return user.rows[0];
+    } else if (usertype == 'instructor') {
+      const user = await client.sql`SELECT * FROM instructors WHERE username = ${username}`;
+      return user.rows[0];
+    } else if (usertype == 'admin') {
+      const user = await client.sql`SELECT * FROM admins WHERE username = ${username}`;
+      return user.rows[0];
+    }
+    return null;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user data.');
+  }
+}
+
+export async function isLoggedIn() {
+  // Retrieve the session cookie
+  const sessionCookie = (await cookies()).get('session')?.value;
+
+  let sessionData = null;
+  if (sessionCookie) {
+    try {
+      // Decrypt and parse the cookie
+      const decryptedData = sessionCookie; // Simulate decrypt here
+      sessionData = JSON.parse(decryptedData);
+    } catch (error) {
+      console.error("Failed to decrypt or parse session data", error);
+      sessionData = null;
+    }
+  }
+
+  if (sessionData) {
+    // Fetch the user from the database
+    const user = await getUser(sessionData.username, sessionData.usertype);
+
+    if (user) {
+      // Compare the password from session data with the password stored in the database
+      const isPasswordMatch = await bcrypt.compare(sessionData.password, user.password);
+
+      if (isPasswordMatch) {
+        // If the password matches, return session data
+        return { sessionData };
+      } else {
+        // If the password doesn't match, return null (invalid session)
+        console.error("Password mismatch for user:", sessionData.username);
+        return null;
+      }
+    } else {
+      // If no user found, return null
+      console.error("User not found:", sessionData.username);
+      return null;
+    }
+  } else {
+    // Return null if no session data
+    return null;
+  }
+}
+
+export async function fetchInstructors() {
+  try {
+    const data = await client.sql`SELECT * FROM instructors`;
+
+    return data?.rows || []; // Ensure it returns an empty array if data.rows is undefined
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch instructors data.');
+  }
+}
 
 export async function fetchRevenue() {
   try {

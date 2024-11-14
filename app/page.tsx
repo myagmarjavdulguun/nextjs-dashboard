@@ -1,33 +1,43 @@
-import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
+import Link from "next/link";
+import { isLoggedIn } from "./lib/data";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+  const data = await isLoggedIn();
+
+  if (data) {
+    redirect('http://localhost:3000/home');
+  }
+
   return (
-    <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
-        {/* <AcmeLogo /> */}
-      </div>
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
-          <p className={`text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Welcome to Acme.</strong> This is the example for the{' '}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
-              Next.js Learn Course
-            </a>
-            , brought to you by Vercel.
-          </p>
-          <Link
-            href="/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+
+      {/* Header with Login Button */}
+      <header className="w-full py-4 px-8 bg-blue-600 flex justify-between items-center text-white shadow-md">
+        <h1 className="text-3xl font-semibold">Систем</h1>
+        <Link 
+          href="/login"
+          className="px-6 py-2 bg-blue-800 rounded-lg hover:bg-blue-900 transition duration-300"
+        >
+          Нэвтрэх
+        </Link>
+      </header>
+
+      {/* Main Content Container */}
+      <main className="w-full max-w-4xl p-6 mx-auto mt-12 space-y-12">
+
+        {/* Hero Section with Full Image Background */}
+        <div className="relative w-full bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 text-white py-28 px-10 rounded-3xl shadow-2xl overflow-hidden">
+          <h1 className="relative text-5xl font-extrabold text-center z-10">Системд тавтай морил!</h1>
+          <p className="relative text-xl text-center z-10 mt-3">Үргэлжлүүлэхийн тулд нэвтрэх шаардлагатай.</p>
         </div>
-        <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          {/* Add Hero Images Here */}
+
+        {/* Descriptive Text Section */}
+        <div className="mt-8 text-center space-y-4 text-lg text-gray-700">
+          <p>Уг систем нь их дээд сургуулийн төгсөгчдийг чадавхжуулахад дэмжлэг үзүүлэхэд чиглэсэн.</p>
         </div>
-      </div>
-    </main>
+
+      </main>
+    </div>
   );
 }
