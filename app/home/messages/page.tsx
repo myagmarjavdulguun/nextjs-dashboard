@@ -15,9 +15,11 @@ export default async function Page(props: {
 
   const user = await getUser(data?.sessionData.username, data?.sessionData.usertype);
 
-  const messages = await getMessages(user?.graduate_id, searchParams.instructor);
+  const selectedInstructorId = searchParams?.instructor ?? '';
 
-  const selectedInstructorName = instructors.map((instructor) => {if (instructor.instructor_id == searchParams.instructor) return `${instructor.first_name} ${instructor.last_name}`});
+  const messages = await getMessages(user?.graduate_id, selectedInstructorId);
+
+  const selectedInstructorName = instructors.map((instructor) => {if (instructor.instructor_id == selectedInstructorId) return `${instructor.first_name} ${instructor.last_name}`});
   
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-pink-200 p-6 flex">
