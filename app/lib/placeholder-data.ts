@@ -1,147 +1,201 @@
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
-// https://nextjs.org/learn/dashboard-app/fetching-data
-const users = [
+const graduates = [
   {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',
-    name: 'User',
-    email: 'user@nextmail.com',
-    password: '123456',
+    username: 'grad0001',
+    first_name: 'Амар',
+    last_name: 'Болд',
+    password: 'grad0001',
+    field_of_study: 'Мэдээлэл технологи, Харилцаа холбоо',
+    major: 'Мэдээллийн аюулгүй байдал',
+    skills_to_learn: 'үүлэн технологи, веб хөгжүүлэлт',
+    user_type: 'graduate',
+  },
+  {
+    username: 'grad0002',
+    first_name: 'Ванган',
+    last_name: 'Гэрэл',
+    password: 'grad0002',
+    field_of_study: 'Мэдээлэл технологи, Харилцаа холбоо',
+    major: 'Програм хангамж',
+    skills_to_learn: 'веб хөгжүүлэлт',
+    user_type: 'graduate',
+  },
+  {
+    username: 'grad0003',
+    first_name: 'Дулам',
+    last_name: 'Ерөөлт',
+    password: 'grad0003',
+    field_of_study: 'Санхүү, нягтлан бодох бүртгэл',
+    major: 'Нягтлан бодох бүртгэл',
+    skills_to_learn: 'аудит хяналт',
+    user_type: 'graduate',
+  },
+  {
+    username: 'grad0004',
+    first_name: 'Ёндон',
+    last_name: 'Жавзаа',
+    password: 'grad0004',
+    field_of_study: 'Санхүү, нягтлан бодох бүртгэл',
+    major: 'Санхүү',
+    skills_to_learn: 'эдийн засаг',
+    user_type: 'graduate',
+  },
+  {
+    username: 'grad0005',
+    first_name: 'Зандаа',
+    last_name: 'Идэр',
+    password: 'grad0005',
+    field_of_study: 'Боловсрол, Шинжлэх ухаан',
+    major: 'Багш - Гадаад хэл',
+    skills_to_learn: 'заах аргазүй',
+    user_type: 'graduate',
   },
 ];
 
-const customers = [
+const instructors = [
   {
-    id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
-    name: 'Evil Rabbit',
-    email: 'evil@rabbit.com',
-    image_url: '/customers/evil-rabbit.png',
+    username: 'inst0001',
+    first_name: 'Лхам',
+    last_name: 'Молом',
+    password: 'inst0001',
+    field_of_study: 'Мэдээлэл технологи, Харилцаа холбоо',
+    expertise: 'Мэдээллийн аюулгүй байдал',
+    user_type: 'instructor',
   },
   {
-    id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-    name: 'Delba de Oliveira',
-    email: 'delba@oliveira.com',
-    image_url: '/customers/delba-de-oliveira.png',
+    username: 'inst0002',
+    first_name: 'Нэргүй',
+    last_name: 'Оюу',
+    password: 'inst0002',
+    field_of_study: 'Мэдээлэл технологи, Харилцаа холбоо',
+    expertise: 'Системийн инженер',
+    user_type: 'instructor',
   },
   {
-    id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
-    name: 'Lee Robinson',
-    email: 'lee@robinson.com',
-    image_url: '/customers/lee-robinson.png',
+    username: 'inst0003',
+    first_name: 'Өнөр',
+    last_name: 'Пүрэв',
+    password: 'inst0003',
+    field_of_study: 'Мэдээлэл технологи, Харилцаа холбоо',
+    expertise: 'Веб дизайнер',
+    user_type: 'instructor',
   },
   {
-    id: '76d65c26-f784-44a2-ac19-586678f7c2f2',
-    name: 'Michael Novotny',
-    email: 'michael@novotny.com',
-    image_url: '/customers/michael-novotny.png',
+    username: 'inst0004',
+    first_name: 'Равдан',
+    last_name: 'Сувд',
+    password: 'inst0004',
+    field_of_study: 'Санхүү, нягтлан бодох бүртгэл',
+    expertise: 'Эдийн засаг',
+    user_type: 'instructor',
   },
   {
-    id: 'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
-    name: 'Amy Burns',
-    email: 'amy@burns.com',
-    image_url: '/customers/amy-burns.png',
-  },
-  {
-    id: '13D07535-C59E-4157-A011-F8D2EF4E0CBB',
-    name: 'Balazs Orban',
-    email: 'balazs@orban.com',
-    image_url: '/customers/balazs-orban.png',
-  },
-];
-
-const invoices = [
-  {
-    customer_id: customers[0].id,
-    amount: 15795,
-    status: 'pending',
-    date: '2022-12-06',
-  },
-  {
-    customer_id: customers[1].id,
-    amount: 20348,
-    status: 'pending',
-    date: '2022-11-14',
-  },
-  {
-    customer_id: customers[4].id,
-    amount: 3040,
-    status: 'paid',
-    date: '2022-10-29',
-  },
-  {
-    customer_id: customers[3].id,
-    amount: 44800,
-    status: 'paid',
-    date: '2023-09-10',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 34577,
-    status: 'pending',
-    date: '2023-08-05',
-  },
-  {
-    customer_id: customers[2].id,
-    amount: 54246,
-    status: 'pending',
-    date: '2023-07-16',
-  },
-  {
-    customer_id: customers[0].id,
-    amount: 666,
-    status: 'pending',
-    date: '2023-06-27',
-  },
-  {
-    customer_id: customers[3].id,
-    amount: 32545,
-    status: 'paid',
-    date: '2023-06-09',
-  },
-  {
-    customer_id: customers[4].id,
-    amount: 1250,
-    status: 'paid',
-    date: '2023-06-17',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 8546,
-    status: 'paid',
-    date: '2023-06-07',
-  },
-  {
-    customer_id: customers[1].id,
-    amount: 500,
-    status: 'paid',
-    date: '2023-08-19',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 8945,
-    status: 'paid',
-    date: '2023-06-03',
-  },
-  {
-    customer_id: customers[2].id,
-    amount: 1000,
-    status: 'paid',
-    date: '2022-06-05',
+    username: 'inst0005',
+    first_name: 'Төмөр',
+    last_name: 'Уянга',
+    password: 'inst0005',
+    field_of_study: 'Боловсрол, Шинжлэх ухаан',
+    expertise: 'Аргазүйч',
+    user_type: 'instructor',
   },
 ];
 
-const revenue = [
-  { month: 'Jan', revenue: 2000 },
-  { month: 'Feb', revenue: 1800 },
-  { month: 'Mar', revenue: 2200 },
-  { month: 'Apr', revenue: 2500 },
-  { month: 'May', revenue: 2300 },
-  { month: 'Jun', revenue: 3200 },
-  { month: 'Jul', revenue: 3500 },
-  { month: 'Aug', revenue: 3700 },
-  { month: 'Sep', revenue: 2500 },
-  { month: 'Oct', revenue: 2800 },
-  { month: 'Nov', revenue: 3000 },
-  { month: 'Dec', revenue: 4800 },
+const admins = [
+  {
+    username: 'admin',
+    password: 'adminpassword',
+    user_type: 'admin',
+  },
 ];
 
-export { users, customers, invoices, revenue };
+const requests = [
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    status: 'accepted',
+  },
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: '65999d2b-c2b5-4107-ac32-5cc19c8a881d',
+    status: 'pending',
+  },
+  {
+    graduate_id: '37af5453-3682-4d32-83b5-97239887f0f4',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    status: 'accepted',
+  },
+  {
+    graduate_id: 'ad0dfa97-cda6-4a8c-9cf5-d526eea32674',
+    instructor_id: '3b15c03f-e434-4ed4-996a-d799c187e864',
+    status: 'accepted',
+  },
+  {
+    graduate_id: 'ad0dfa97-cda6-4a8c-9cf5-d526eea32674',
+    instructor_id: '0f511040-8d93-493c-927c-f935643ec630',
+    status: 'pending',
+  },
+];
+
+const messages = [
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    sender: 'graduate',
+    message_content: 'Sain baina uu',
+    sent_date: '4/10/2024, 14:37:49',
+  },
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    sender: 'graduate',
+    message_content: 'Ym asuuh geed',
+    sent_date: '4/10/2024, 14:37:51',
+  },
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    sender: 'instructor',
+    message_content: 'Сайн, сайн уу. Юу асуух гэсэн юм.',
+    sent_date: '4/10/2024, 16:00:05',
+  },
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    sender: 'graduate',
+    message_content: 'Surgalt hezeenees ehleh ve',
+    sent_date: '4/10/2024, 16:01:02',
+  },
+  {
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    sender: 'instructor',
+    message_content: 'Daraa doloo honogoos ehelne',
+    sent_date: '4/10/2024, 16:01:27',
+  },
+];
+
+const trainings = [
+  {
+    instructor_id: 'cdd10b9c-1a7d-4370-bdfa-692034bdf3d3',
+    title: 'Мэдээлийн аюулгүй байдал',
+    description: 'Мэдээллийн аюулгүй байдлын талаарх 7 хоногийн сургалт 17:00 - 19:00 цагийн хооронд явагдана.',
+    start_date: '2024-11-07',
+    end_date: '2024-11-14',
+    location: 'Муис 8-р байр, 402 тоот',
+    max_participants: 10,
+    min_participants: 5,
+    price: 15000,
+  },
+];
+
+const participations = [
+  {
+    training_id: 'b28c394b-27c1-48e9-86ce-8428ca8edba6',
+    graduate_id: '5ccb64e9-390f-451f-b300-bda3309358a9',
+  },
+  {
+    training_id: 'b28c394b-27c1-48e9-86ce-8428ca8edba6',
+    graduate_id: '37af5453-3682-4d32-83b5-97239887f0f4',
+  },
+];
+
+export { admins, graduates, instructors, requests, messages, trainings, participations };

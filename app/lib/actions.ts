@@ -4,6 +4,36 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation'; 
+
+export async function createChat(prevState: State, formData: FormData) {
+    const message = formData.get('message')?.toString();
+    const graduate_id = formData.get('graduate_id')?.toString();
+    const instructor_id = formData.get('instructor_id')?.toString();
+    const sender = formData.get('sender')?.toString();
+    const date = new Date().toISOString();
+  
+    console.log('Received data:', {
+      message,
+      graduate_id,
+      instructor_id,
+      sender,
+      date
+    });
+  
+    try {
+      await sql`
+        INSERT INTO messages (graduate_id, instructor_id, sender, message_content, sent_date)
+        VALUES (${graduate_id}, ${instructor_id}, ${sender}, ${message}, ${date});
+      `;
+    } catch (error) {
+      console.error('Database error:', error);  // Log more specific error
+      return {
+        message: 'Database Error: Failed to Create message.',
+      };
+    }
+  
+    revalidatePath('/home/messages?instructor=' + instructor_id);
+}
  
 const FormSchema = z.object({
     id: z.string(),

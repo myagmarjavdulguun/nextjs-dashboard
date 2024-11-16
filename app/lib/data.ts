@@ -10,7 +10,25 @@ import {
 import { cookies } from 'next/headers';
 import bcrypt from 'bcrypt';
 
+type Message = {
+  graduate_id: string;
+  instructor_id: string;
+  message_content: string;
+  sender: string;
+  sent_date: Date;
+  // Add other fields as needed
+};
+
 const client = await db.connect();
+
+export async function getCurrentTrainings(graduate_id: string, instructor_id: string) {
+  try {
+    let trainins;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch messages data.');
+  }
+}
 
 export async function getMessages(graduate_id: string, instructor_id: string) {
   try {
@@ -68,6 +86,23 @@ export async function getRequestedInstructors(username: string) {
     throw new Error('Failed to fetch requested instructor data.');
   }
 }
+
+export async function getAcceptedGraduates(username: string) {
+  try {
+    const graduates = await client.sql`
+      SELECT g.*
+      FROM requests r
+      FULL JOIN instructors i ON r.instructor_id::TEXT = i.instructor_id::TEXT
+      FULL JOIN graduates g ON r.graduate_id::TEXT = g.graduate_id::TEXT
+      WHERE i.username = ${username} AND r.status = 'accepted';
+    `;
+
+    return graduates.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch accepted graduates data.');
+  }
+} 
 
 export async function getAcceptedInstructors(username: string) {
   try {
@@ -154,7 +189,7 @@ export async function fetchInstructors() {
   try {
     const data = await client.sql`SELECT * FROM instructors`;
 
-    return data?.rows || []; // Ensure it returns an empty array if data.rows is undefined
+    return data?.rows || [];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch instructors data.');

@@ -4,12 +4,14 @@ import {
   DocumentDuplicateIcon,
   ComputerDesktopIcon,
 } from '@heroicons/react/24/outline';
-import { computeFromManifest } from 'next/dist/build/utils';
 import Link from 'next/link';
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const links = [
+interface NavLinksProps {
+  userType: 'graduate' | 'instructor'; // User type to determine which links to show
+}
+
+// Define links for each user type
+const graduateLinks = [
   { name: 'Home', href: '/home', icon: HomeIcon },
   {
     name: 'Instructors',
@@ -28,7 +30,29 @@ const links = [
   },
 ];
 
-export default function NavLinks() {
+const instructorLinks = [
+  { name: 'Home', href: '/home', icon: HomeIcon },
+  {
+    name: 'Graduates',
+    href: '/home/graduates',
+    icon: UserGroupIcon,
+  },
+  {
+    name: 'Messages',
+    href: '/home/messages',
+    icon: DocumentDuplicateIcon,
+  },
+  {
+    name: 'Trainings',
+    href: '/home/trainings',
+    icon: ComputerDesktopIcon,
+  },
+];
+
+export default function NavLinks({ userType }: NavLinksProps) {
+  // Determine the links to display based on user type
+  const links = userType === 'graduate' ? graduateLinks : instructorLinks;
+
   return (
     <>
       {links.map((link) => {

@@ -6,7 +6,7 @@ export default async function Page() {
   const data = await isLoggedIn();
 
   if (data) {
-    redirect('http://localhost:3000/home');
+    redirect('/home');
   }
 
   return (
