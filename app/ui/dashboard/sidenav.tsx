@@ -6,7 +6,7 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/compat/router';
 
-export default function SideNav() {
+export default function SideNav({usertype} : {usertype: string}) {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -35,7 +35,7 @@ export default function SideNav() {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks />
+        <NavLinks usertype={usertype} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
           <button onClick={handleLogout} className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
