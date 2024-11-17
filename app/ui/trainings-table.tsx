@@ -2,22 +2,12 @@
 
 export default function TrainingTable({
   trainings,
-  onParticipate,
+  query,
+  graduate_id,
 }: {
-  trainings: Array<{
-    training_id: string;
-    title: string;
-    description: string;
-    start_date: string;
-    end_date: string;
-    location: string;
-    max_participants: number;
-    min_participants: number;
-    price: number;
-    first_name: string;
-    last_name: string;
-  }>;
-  onParticipate: (trainingId: string) => void;
+  trainings: Array<any>;
+  query: string;
+    graduate_id: string;
 }) {
   return (
     <div className="mt-6 flow-root">
@@ -57,7 +47,6 @@ export default function TrainingTable({
                   <td className="px-3 py-3">{training.price}₮</td>
                   <td className="px-3 py-3">
                     <button
-                      onClick={() => onParticipate(training.training_id)}
                       className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
                     >
                       Сургалтад хамрагдах
