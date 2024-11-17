@@ -45,9 +45,33 @@ const instructorLinks = [
   },
 ];
 
-export default function NavLinks({ usertype }: {usertype: string}) {
+const adminLinks = [
+  { name: 'Үндсэн цэс', href: '/home', icon: HomeIcon },
+  {
+    name: 'Багш бүртгэх',
+    href: '/home/instructors/register',
+    icon: UserGroupIcon,
+  },
+  {
+    name: 'Багш устгах',
+    href: '/home/instructors/delete',
+    icon: UserGroupIcon,
+  },
+  {
+    name: 'Төгсөгч бүртгэх',
+    href: '/home/graduates/register',
+    icon: UserGroupIcon,
+  },
+  {
+    name: 'Төгсөгч устгах',
+    href: '/home/graduates/delete',
+    icon: UserGroupIcon,
+  },
+];
+
+export default function NavLinks({ usertype }: { usertype: string }) {
   // Determine the links to display based on user type
-  const links = usertype === 'graduate' ? graduateLinks : instructorLinks;
+  const links = usertype === 'admin' ? adminLinks : (usertype === 'graduate' ? graduateLinks : instructorLinks);
 
   return (
     <>

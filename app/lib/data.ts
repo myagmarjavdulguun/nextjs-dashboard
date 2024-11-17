@@ -22,6 +22,58 @@ type Message = {
 
 const client = await db.connect();
 
+export async function getGraduateNumber() {
+  try {
+    const data = await sql`
+      SELECT * FROM graduates;
+    `;
+
+    return data.rowCount;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch number of graduates.');
+  }
+}
+
+export async function getTrainingNumber() {
+  try {
+    const data = await sql`
+      SELECT * FROM trainings;
+    `;
+
+    return data.rowCount;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch number of trainings.');
+  }
+}
+
+export async function getActiveTrainingNumber() {
+  try {
+    const data = await sql`
+      SELECT * FROM trainings WHERE start_date < NOW() AND NOW() < end_date;
+    `;
+
+    return data.rowCount;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch number of active training.');
+  }
+}
+
+export async function getInstructorNumber() {
+  try {
+    const data = await sql`
+      SELECT * FROM instructors;
+    `;
+
+    return data.rowCount;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch number of instructors.');
+  }
+}
+
 export async function getIncomingRequestsForInstructor(instructor_id: string) {
   try {
     const results = await sql`
@@ -250,6 +302,17 @@ export async function isLoggedIn() {
   } else {
     // Return null if no session data
     return null;
+  }
+}
+
+export async function fetchGraduates() {
+  try {
+    const data = await client.sql`SELECT * FROM graduates`;
+
+    return data?.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch graduates data.');
   }
 }
 

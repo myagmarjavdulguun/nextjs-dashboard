@@ -5,6 +5,128 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation'; 
 
+export async function deleteGraduate(graduate_id: string) {
+    try {
+      // Delete related trainings first
+      await sql`
+        DELETE FROM participations
+        WHERE graduate_id::TEXT = ${graduate_id};
+      `;
+  
+      // Delete related requests (assuming requests are tied to a training)
+      await sql`
+        DELETE FROM requests
+        WHERE graduate_id::TEXT = ${graduate_id};
+      `;
+  
+      // Delete the instructor
+      await sql`
+        DELETE FROM graduates
+        WHERE graduate_id::TEXT = ${graduate_id};
+      `;
+
+      revalidatePath('/home/graduates/delete')
+  
+      return { message: 'Graduates and related data deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting graduate and related data:', error);
+      return { message: 'Failed to delete graduate and related data' };
+    }
+}  
+
+export async function deleteInstructor(instructor_id: string) {
+    try {
+      // Delete related trainings first
+      await sql`
+        DELETE FROM trainings
+        WHERE instructor_id::TEXT = ${instructor_id};
+      `;
+  
+      // Delete related requests (assuming requests are tied to a training)
+      await sql`
+        DELETE FROM requests
+        WHERE instructor_id::TEXT = ${instructor_id};
+      `;
+  
+      // Delete the instructor
+      await sql`
+        DELETE FROM instructors
+        WHERE instructor_id::TEXT = ${instructor_id};
+      `;
+
+      revalidatePath('/home/instructors/delete')
+  
+      return { message: 'Instructor and related data deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting instructor and related data:', error);
+      return { message: 'Failed to delete instructor and related data' };
+    }
+}  
+
+export async function createGraduate(formData: FormData) {
+    const username = formData.get('username')?.toString();
+    const firstName = formData.get('first_name')?.toString();
+    const lastName = formData.get('last_name')?.toString();
+    const password = formData.get('password')?.toString();
+    const fieldOfStudy = formData.get('field_of_study')?.toString();
+    const major = formData.get('major')?.toString();
+    const userType = formData.get('user_type')?.toString(); 
+
+    try {
+        // Check if the instructor already exists (based on username or email)
+        const existingGraduate = await sql`
+          SELECT 1 FROM graduates WHERE username = ${username};
+        `;
+    
+        if (existingGraduate.rowCount > 0) {
+          return { message: 'Graduate already exists with this username.' };
+        }
+    
+        // Insert the new instructor into the database
+        await sql`
+          INSERT INTO graduates (username, first_name, last_name, password, field_of_study, major, user_type)
+          VALUES (${username}, ${firstName}, ${lastName}, ${password}, ${fieldOfStudy}, ${major}, ${userType});
+        `;
+    
+        return { message: 'Graduate created successfully!' };
+      } catch (error) {
+        console.error('Database error:', error);
+        return { message: 'Failed to create graduate. Please try again.' };
+      }
+}
+
+export async function createInstructor(formData: FormData) {
+    const username = formData.get('username')?.toString();
+    const firstName = formData.get('first_name')?.toString();
+    const lastName = formData.get('last_name')?.toString();
+    const password = formData.get('password')?.toString();
+    const fieldOfStudy = formData.get('field_of_study')?.toString();
+    const expertise = formData.get('expertise')?.toString();
+    const userType = formData.get('user_type')?.toString();  // Assuming user_type will be either 'admin', 'instructor', etc.
+  
+    try {
+      // Check if the instructor already exists (based on username or email)
+      const existingInstructor = await sql`
+        SELECT 1 FROM instructors WHERE username = ${username};
+      `;
+  
+      if (existingInstructor.rowCount > 0) {
+        return { message: 'Instructor already exists with this username.' };
+      }
+  
+      // Insert the new instructor into the database
+      await sql`
+        INSERT INTO instructors (username, first_name, last_name, password, field_of_study, expertise, user_type)
+        VALUES (${username}, ${firstName}, ${lastName}, ${password}, ${fieldOfStudy}, ${expertise}, ${userType});
+      `;
+  
+      return { message: 'Instructor created successfully!' };
+    } catch (error) {
+      console.error('Database error:', error);
+      return { message: 'Failed to create instructor. Please try again.' };
+    }
+}
+
 export async function deleteTraining(prevState: State, formData: FormData) {
     const training_id = formData.get('training_id')?.toString();
     const query = formData.get('query')?.toString();
