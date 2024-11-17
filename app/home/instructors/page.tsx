@@ -77,13 +77,19 @@ export default async function Page(props: {
                       Мэргэжлийн чиглэл: {instructor.expertise}
                     </p>
                   </div>
-                  <Link
-                    href={'/home/messages?graduate=' + instructor.instructor_id}
-                    className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center space-x-2"
-                  >
-                    <ChatBubbleLeftIcon className="w-5 h-5" />
-                    <span>Мессеж</span>
-                  </Link>
+                  <div className="flex gap-1">
+                    <DeleteRequestButton 
+                      request_id={instructor.request_id}
+                      query={query}
+                    />
+                    <Link
+                      href={'/home/messages?graduate=' + instructor.instructor_id}
+                      className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center space-x-2"
+                    >
+                      <ChatBubbleLeftIcon className="w-5 h-5" />
+                      <span>Мессеж</span>
+                    </Link>
+                  </div>
                 </div>
               ))
             ) : (

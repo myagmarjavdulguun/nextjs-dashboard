@@ -22,6 +22,29 @@ type Message = {
 
 const client = await db.connect();
 
+export async function getIncomingRequestsForInstructor(instructor_id: string) {
+  try {
+    const results = await sql`
+      SELECT 
+        requests.request_id, 
+        graduates.graduate_id, 
+        graduates.first_name, 
+        graduates.last_name,
+        graduates.field_of_study,
+        graduates.major,
+        graduates.skills_to_learn
+      FROM requests
+      JOIN graduates ON requests.graduate_id::TEXT = graduates.graduate_id::TEXT
+      WHERE requests.instructor_id::TEXT = ${instructor_id}
+      AND requests.status = 'pending';
+    `;
+    return results.rows;
+  } catch (error) {
+    console.error("Error fetching incoming requests:", error);
+    return [];
+  }
+}
+
 export async function getTrainings(query: string) {
   try {
     const trainings = await client.sql`
@@ -37,15 +60,13 @@ export async function getTrainings(query: string) {
   }
 }
 
-export async function getCurrentInstructorTrainings(instructor_id: string) {
+export async function getInstructorTrainings(instructor_id: string) {
   try {
     const trainings = await client.sql`
       SELECT t.*, i.*
       FROM trainings t
       FULL JOIN instructors i ON t.instructor_id::TEXT = i.instructor_id::TEXT
       WHERE t.instructor_id = ${instructor_id}
-      AND start_date < NOW() 
-      AND end_date > NOW()
       ORDER BY start_date;
     `;
 
@@ -56,7 +77,7 @@ export async function getCurrentInstructorTrainings(instructor_id: string) {
   }
 }
 
-export async function getCurrentGraduateTrainings(graduate_id: string) {
+export async function getGraduateTrainings(graduate_id: string) {
   try {
     const trainings = await client.sql`
       SELECT t.*, i.* 
@@ -66,9 +87,7 @@ export async function getCurrentGraduateTrainings(graduate_id: string) {
           SELECT training_id::TEXT
           FROM participations
           WHERE graduate_id = ${graduate_id}
-      ) 
-      AND start_date < NOW() 
-      AND end_date > NOW()
+      )
       ORDER BY start_date;
     `;
 
@@ -157,7 +176,7 @@ export async function getAcceptedInstructors(username: string) {
   try {
     // Fetch instructors based on the provided username and accepted requests
     const instructors = await client.sql`
-      SELECT i.*
+      SELECT i.*, r.*
       FROM requests r
       FULL JOIN instructors i ON r.instructor_id::TEXT = i.instructor_id::TEXT
       FULL JOIN graduates g ON r.graduate_id::TEXT = g.graduate_id::TEXT
@@ -261,6 +280,31 @@ export async function fetchRevenue() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+export async function getFilteredGraduates(
+  query: string,
+) {
+  try {
+    if (!query) {
+      return [];
+    }
+    const graduates = await client.sql`
+      SELECT * 
+      FROM graduates
+      WHERE 
+        first_name ILIKE ${`%${query}%`} OR
+        last_name ILIKE ${`%${query}%`} OR
+        field_of_study ILIKE ${`%${query}%`} OR
+        major ILIKE ${`%${query}%`} OR
+        skills_to_learn ILIKE ${`%${query}%`};
+    `;
+
+    return graduates.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered graduates.');
   }
 }
 

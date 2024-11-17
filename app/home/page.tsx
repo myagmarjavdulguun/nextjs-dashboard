@@ -1,6 +1,6 @@
-import { getCurrentGraduateTrainings, getCurrentInstructorTrainings, isLoggedIn } from "../lib/data";
+import { getInstructorTrainings, getGraduateTrainings, isLoggedIn } from "../lib/data";
 import { getUser } from "../lib/data"; // Assuming getCurrentTrainings is a function that fetches the user's current trainings
-import { UserIcon, AcademicCapIcon, LightBulbIcon, BriefcaseIcon } from '@heroicons/react/24/outline';
+import { UserIcon, BriefcaseIcon } from '@heroicons/react/24/outline';
 
 export default async function Page() {
   const data = await isLoggedIn();
@@ -9,7 +9,7 @@ export default async function Page() {
   const user = await getUser(data?.sessionData.username, data?.sessionData.usertype);
 
   // Fetch the current trainings for the user
-  const currentTrainings = data?.sessionData.usertype === 'graduate' ? await getCurrentGraduateTrainings(user?.graduate_id) : await getCurrentInstructorTrainings(user?.instructor_id);
+  const currentTrainings = data?.sessionData.usertype === 'graduate' ? await getGraduateTrainings(user?.graduate_id) : await getInstructorTrainings(user?.instructor_id);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 to-purple-200 p-6">
@@ -30,6 +30,9 @@ export default async function Page() {
                   </p>
                   <p className="text-sm text-gray-600">
                     <span className="font-semibold">Дуусах огноо:</span> {new Date(training.end_date).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Байршил:</span> {training.location}
                   </p>
                 </div>
               ))

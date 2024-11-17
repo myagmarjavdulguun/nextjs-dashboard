@@ -1,5 +1,7 @@
 'use client';
 
+import ParticipationButton from "./create-participation-form";
+
 export default function TrainingTable({
   trainings,
   query,
@@ -30,7 +32,7 @@ export default function TrainingTable({
               {trainings.map((training) => (
                 <tr
                   key={training.training_id}
-                  className="border-b text-sm hover:bg-gray-100 transition-all"
+                  className="border-b text-sm transition-all"
                 >
                   <td className="whitespace-nowrap px-3 py-3">
                     {training.first_name} {training.last_name}
@@ -38,19 +40,19 @@ export default function TrainingTable({
                   <td className="whitespace-nowrap px-3 py-3">{training.title}</td>
                   <td className="px-3 py-3">{training.description}</td>
                   <td className="px-3 py-3">
-                    {new Date(training.start_date).toLocaleDateString()}
+                    {new Date(training.start_date).toLocaleDateString('en-US')}
                   </td>
                   <td className="px-3 py-3">
-                    {new Date(training.end_date).toLocaleDateString()}
+                    {new Date(training.end_date).toLocaleDateString('en-US')}
                   </td>
                   <td className="px-3 py-3">{training.location}</td>
                   <td className="px-3 py-3">{training.price}₮</td>
                   <td className="px-3 py-3">
-                    <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
-                    >
-                      Сургалтад хамрагдах
-                    </button>
+                    <ParticipationButton 
+                        graduate_id={graduate_id}
+                        training_id={training.training_id}
+                        query={query}
+                    />
                   </td>
                 </tr>
               ))}
