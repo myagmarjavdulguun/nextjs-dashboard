@@ -9,6 +9,7 @@ import {
 } from './definitions';
 import { cookies } from 'next/headers';
 import bcrypt from 'bcrypt';
+import { any } from 'zod';
 
 type Message = {
   graduate_id: string;
@@ -21,12 +22,60 @@ type Message = {
 
 const client = await db.connect();
 
-export async function getCurrentTrainings(graduate_id: string, instructor_id: string) {
+export async function getTrainings(query: string) {
   try {
-    let trainins;
+    const trainings = await client.sql`
+      SELECT t.*, i.*
+      FROM trainings t
+      INNER JOIN instructors i ON i.instructor_id::TEXT = t.instructor_id::TEXT;
+    `;
+
+    return trainings.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch messages data.');
+    throw new Error('Failed to fetch training.');
+  }
+}
+
+export async function getCurrentInstructorTrainings(instructor_id: string) {
+  try {
+    const trainings = await client.sql`
+      SELECT t.*, i.*
+      FROM trainings t
+      FULL JOIN instructors i ON t.instructor_id::TEXT = i.instructor_id::TEXT
+      WHERE t.instructor_id = ${instructor_id}
+      AND start_date < NOW() 
+      AND end_date > NOW()
+      ORDER BY start_date;
+    `;
+
+    return trainings.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch trainings data.');
+  }
+}
+
+export async function getCurrentGraduateTrainings(graduate_id: string) {
+  try {
+    const trainings = await client.sql`
+      SELECT t.*, i.* 
+      FROM trainings t
+      FULL JOIN instructors i ON t.instructor_id::TEXT = i.instructor_id::TEXT
+      WHERE training_id::TEXT IN (
+          SELECT training_id::TEXT
+          FROM participations
+          WHERE graduate_id = ${graduate_id}
+      ) 
+      AND start_date < NOW() 
+      AND end_date > NOW()
+      ORDER BY start_date;
+    `;
+
+    return trainings?.rows || [];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch trainings data.');
   }
 }
 
@@ -72,7 +121,7 @@ export async function getRequestedInstructors(username: string) {
   try {
     // Fetch instructors based on the provided username and accepted requests
     const instructors = await client.sql`
-      SELECT i.*
+      SELECT i.*, r.request_id
       FROM requests r
       FULL JOIN instructors i ON r.instructor_id::TEXT = i.instructor_id::TEXT
       FULL JOIN graduates g ON r.graduate_id::TEXT = g.graduate_id::TEXT
@@ -212,6 +261,70 @@ export async function fetchRevenue() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+export async function getFilteredTrainings(
+  query: string,
+) {
+  try {
+    if (!query) {
+      return [];
+    }
+    const trainings = await client.sql`
+      SELECT 
+        t.*, i.*
+      FROM 
+        trainings t
+      INNER JOIN 
+        instructors i
+      ON 
+        i.instructor_id::TEXT = t.instructor_id::TEXT
+      WHERE 
+        t.title ILIKE ${`%${query}%`} OR
+        t.description ILIKE ${`%${query}%`} OR
+        i.first_name ILIKE ${`%${query}%`} OR
+        i.last_name ILIKE ${`%${query}%`};
+    `;
+
+    return trainings.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered trainings.');
+  }
+}
+
+export async function getFilteredInstructors(
+  query: string,
+  graduate_id: string,
+) {
+  try {
+    if (!query) {
+      return [];
+    }
+    const instructors = await client.sql`
+      SELECT 
+        i.*, 
+        r.status,
+        r.request_id
+      FROM 
+        instructors i
+      LEFT JOIN 
+        requests r 
+      ON 
+        r.instructor_id::TEXT = i.instructor_id::TEXT
+        AND r.graduate_id::TEXT = ${graduate_id}
+      WHERE 
+        i.first_name ILIKE ${`%${query}%`} OR
+        i.last_name ILIKE ${`%${query}%`} OR
+        i.field_of_study ILIKE ${`%${query}%`} OR
+        i.expertise ILIKE ${`%${query}%`};
+    `;
+
+    return instructors.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch filtered instructors.');
   }
 }
 

@@ -1,106 +1,79 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { getFilteredInstructors } from '@/app/lib/data';
+import Link from 'next/link';
+import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
+import RequestButton from '../create-request-form';
+import DeleteRequestButton from '../delete-request-button';
 
 export default async function InvoicesTable({
   query,
-  currentPage,
+  graduate_id,
 }: {
   query: string;
-  currentPage: number;
+  graduate_id: string;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const instructors = await getFilteredInstructors(query, graduate_id);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            {invoices?.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
-                  </div>
-                  <InvoiceStatus status={invoice.status} />
-                </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
+          <table className="min-w-full text-gray-900">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Нэр
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Мэргэжлийн салбар
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Мэргэжлийн чиглэл
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
+                  Төлөв
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {instructors?.map((instructor) => (
                 <tr
-                  key={invoice.id}
+                  key={instructor.instructor_id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {instructor.first_name} {instructor.last_name}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {instructor.field_of_study}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {instructor.expertise}
+                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                    {instructor.status == 'pending' ? (
+                      <DeleteRequestButton
+                        request_id={instructor.request_id}
+                        query={query}
                       />
-                      <p>{invoice.name}</p>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
-                    </div>
+                    ) : instructor.status == 'accepted' ? (
+                      <button
+                        className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center space-x-2"
+                      >
+                        <Link
+                          className="bg-blue-500 text-white rounded-lg flex items-center space-x-2"
+                          href={'/home/messages?graduate=' + instructor.instructor_id}
+                        >
+                          <ChatBubbleLeftIcon className="w-5 h-5" />
+                          <span>Мессеж</span>
+                        </Link>
+                      </button>
+                    ) : (
+                      <RequestButton 
+                        graduate_id={graduate_id}
+                        instructor_id={instructor.instructor_id}
+                        query={query}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}

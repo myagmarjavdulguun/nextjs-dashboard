@@ -5,20 +5,48 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation'; 
 
+export async function deleteRequest(prevState: State, formData: FormData) {
+    const request_id = formData.get('request_id')?.toString();
+    const query = formData.get('query')?.toString();
+
+    try {
+        await sql`
+            DELETE FROM requests WHERE request_id = ${request_id};
+        `;
+    } catch (error) {
+      return { message: 'Database Error: Failed to Delete request.' }
+    }
+
+    revalidatePath('/home/instructors?query=' + query);
+  }
+
+export async function createRequest(prevState: State, formData: FormData) {
+    const graduate_id = formData.get('graduate_id')?.toString();
+    const instructor_id = formData.get('instructor_id')?.toString();
+    const status = formData.get('status')?.toString();
+    const query = formData.get('query')?.toString();
+
+    try {
+        await sql`
+            INSERT INTO requests (graduate_id, instructor_id, status) 
+            VALUES (${graduate_id}, ${instructor_id}, ${status});
+        `;
+    } catch (error) {
+        console.error('Database error:', error);  // Log more specific error
+        return {
+          message: 'Database Error: Failed to Create request.',
+        };
+    }
+
+    revalidatePath('/home/instructors?query=' + query);
+}
+
 export async function createChat(prevState: State, formData: FormData) {
     const message = formData.get('message')?.toString();
     const graduate_id = formData.get('graduate_id')?.toString();
     const instructor_id = formData.get('instructor_id')?.toString();
     const sender = formData.get('sender')?.toString();
     const date = new Date().toISOString();
-  
-    console.log('Received data:', {
-      message,
-      graduate_id,
-      instructor_id,
-      sender,
-      date
-    });
   
     try {
       await sql`

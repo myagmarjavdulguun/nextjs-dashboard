@@ -8,38 +8,38 @@ import Link from 'next/link';
 
 // Define links for each user type
 const graduateLinks = [
-  { name: 'Home', href: '/home', icon: HomeIcon },
+  { name: 'Үндсэн цэс', href: '/home', icon: HomeIcon },
   {
-    name: 'Instructors',
+    name: 'Багш',
     href: '/home/instructors',
     icon: UserGroupIcon,
   },
   {
-    name: 'Messages',
+    name: 'Мессеж',
     href: '/home/messages',
     icon: DocumentDuplicateIcon,
   },
   {
-    name: 'Trainings',
+    name: 'Сургалт',
     href: '/home/trainings',
     icon: ComputerDesktopIcon,
   },
 ];
 
 const instructorLinks = [
-  { name: 'Home', href: '/home', icon: HomeIcon },
+  { name: 'Үндсэн цэс', href: '/home', icon: HomeIcon },
   {
-    name: 'Graduates',
+    name: 'Төгсөгч',
     href: '/home/graduates',
     icon: UserGroupIcon,
   },
   {
-    name: 'Messages',
+    name: 'Мессеж',
     href: '/home/messages',
     icon: DocumentDuplicateIcon,
   },
   {
-    name: 'Trainings',
+    name: 'Сургалт',
     href: '/home/trainings',
     icon: ComputerDesktopIcon,
   },
