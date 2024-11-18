@@ -123,7 +123,7 @@ export async function createGraduate(formData: FormData) {
     const username = formData.get('username')?.toString();
     const firstName = formData.get('first_name')?.toString();
     const lastName = formData.get('last_name')?.toString();
-    const password = formData.get('password')?.toString();
+    const password = formData.get('password')?.toString() || '';
     const fieldOfStudy = formData.get('field_of_study')?.toString();
     const major = formData.get('major')?.toString();
     const userType = formData.get('user_type')?.toString(); 
@@ -137,9 +137,10 @@ export async function createGraduate(formData: FormData) {
           return { message: 'Graduate already exists with this username.' };
         }
     
+        const hashedPassword = await bcrypt.hash(password, 10);
         await sql`
           INSERT INTO graduates (username, first_name, last_name, password, field_of_study, major, user_type)
-          VALUES (${username}, ${firstName}, ${lastName}, ${password}, ${fieldOfStudy}, ${major}, ${userType});
+          VALUES (${username}, ${firstName}, ${lastName}, ${hashedPassword}, ${fieldOfStudy}, ${major}, ${userType});
         `;
     
         return { message: 'Graduate created successfully!' };
@@ -153,7 +154,7 @@ export async function createInstructor(formData: FormData) {
     const username = formData.get('username')?.toString();
     const firstName = formData.get('first_name')?.toString();
     const lastName = formData.get('last_name')?.toString();
-    const password = formData.get('password')?.toString();
+    const password = formData.get('password')?.toString() || '';
     const fieldOfStudy = formData.get('field_of_study')?.toString();
     const expertise = formData.get('expertise')?.toString();
     const userType = formData.get('user_type')?.toString(); 
@@ -167,9 +168,10 @@ export async function createInstructor(formData: FormData) {
         return { message: 'Instructor already exists with this username.' };
       }
   
+      const hashedPassword = await bcrypt.hash(password, 10);
       await sql`
         INSERT INTO instructors (username, first_name, last_name, password, field_of_study, expertise, user_type)
-        VALUES (${username}, ${firstName}, ${lastName}, ${password}, ${fieldOfStudy}, ${expertise}, ${userType});
+        VALUES (${username}, ${firstName}, ${lastName}, ${hashedPassword}, ${fieldOfStudy}, ${expertise}, ${userType});
       `;
   
       return { message: 'Instructor created successfully!' };
