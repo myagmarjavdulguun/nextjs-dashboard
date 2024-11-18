@@ -23,10 +23,9 @@ export default async function Page(props: {
   const userType = data?.sessionData.usertype;
 
   if (!data?.sessionData) {
-    redirect("/login"); // Redirect if not logged in
+    redirect("/login"); 
   }
 
-  // Fetch logged-in user details
   const user = await getUser(data?.sessionData.username, userType);
 
   let usersList: any[] = [];
@@ -34,21 +33,17 @@ export default async function Page(props: {
   let messages = [];
 
   if (userType === "graduate") {
-    // Graduate: Show instructors
     usersList = await getAcceptedInstructors(data?.sessionData.username);
 
-    // Redirect if no instructor selected
     if (!searchParams?.instructor && usersList.length > 0) {
       redirect("?instructor=" + usersList[0].instructor_id);
     }
 
-    // Fetch messages for graduate with selected instructor
     messages = await getMessages(
       user?.graduate_id,
       searchParams?.instructor || usersList[0]?.instructor_id
     );
 
-    // Find selected instructor's name
     const selectedInstructor = usersList.find(
       (instructor) => instructor.instructor_id === searchParams?.instructor
     );
@@ -56,21 +51,17 @@ export default async function Page(props: {
       ? `${selectedInstructor.first_name} ${selectedInstructor.last_name}`
       : null;
   } else if (userType === "instructor") {
-    // Instructor: Show graduates
     usersList = await getAcceptedGraduates(data?.sessionData.username);
 
-    // Redirect if no graduate selected
     if (!searchParams?.graduate && usersList.length > 0) {
       redirect("?graduate=" + usersList[0].graduate_id);
     }
 
-    // Fetch messages for instructor with selected graduate
     messages = await getMessages(
       searchParams?.graduate || usersList[0]?.graduate_id,
       user?.instructor_id
     );
 
-    // Find selected graduate's name
     const selectedGraduate = usersList.find(
       (graduate) => graduate.graduate_id === searchParams?.graduate
     );
@@ -81,7 +72,6 @@ export default async function Page(props: {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-pink-200 p-6 flex">
-      {/* Left Sidebar - Users List */}
       <div className="w-80 bg-white p-6 rounded-lg shadow-lg mr-6 flex flex-col">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
           <ChatBubbleLeftIcon className="h-6 w-6 text-purple-600" />
@@ -115,9 +105,7 @@ export default async function Page(props: {
         </div>
       </div>
 
-      {/* Right Side - Chat Area */}
       <div className="flex-1 bg-white p-6 rounded-lg shadow-lg flex flex-col">
-        {/* Messages Component */}
         <div className="flex-grow">
           <Messages
             name={selectedUserName || ""}
@@ -135,7 +123,6 @@ export default async function Page(props: {
           />
         </div>
 
-        {/* Message Form */}
         <div className="mt-auto">
           <MessageForm
             graduate_id={

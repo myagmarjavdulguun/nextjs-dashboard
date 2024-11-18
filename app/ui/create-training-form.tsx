@@ -2,11 +2,10 @@
 
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { useState } from 'react';
-import { createTraining } from "../lib/actions"; // Import the function that handles creating a training
+import { createTraining } from "../lib/actions";
 import { redirect } from "next/navigation";
 
 export default function CreateTrainingForm({ instructor_id }: { instructor_id: string }) {
-    // State for storing form inputs
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -17,7 +16,6 @@ export default function CreateTrainingForm({ instructor_id }: { instructor_id: s
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Prepare form data
         const formData = new FormData();
         formData.append('title', title);
         formData.append('description', description);
@@ -27,7 +25,6 @@ export default function CreateTrainingForm({ instructor_id }: { instructor_id: s
         formData.append('price', price);
         formData.append('instructor_id', instructor_id);
 
-        // Call the action to create the new training (this should be implemented in `actions.ts` or similar)
         const result = await createTraining({}, formData);
 
         redirect('/home/trainings');

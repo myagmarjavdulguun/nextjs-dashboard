@@ -13,21 +13,17 @@ export default function MessageForm({
   instructor_id: string;
   sender: string;
 }) {
-  // State for the message input
   const [message, setMessage] = useState('');
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create FormData object
     const formData = new FormData();
     formData.append('message', message);
     formData.append('graduate_id', graduate_id);
     formData.append('instructor_id', instructor_id);
     formData.append('sender', sender);
 
-    // Call the createChat function
     const result = await createChat({}, formData);
     setMessage('');
   };
@@ -36,13 +32,12 @@ export default function MessageForm({
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
       <div className="space-y-4">
         <div className="flex items-center space-x-4">
-          {/* Message Input */}
           <input
             type="text"
             name="message"
             value={message}
             required
-            onChange={(e) => setMessage(e.target.value)} // Update message state
+            onChange={(e) => setMessage(e.target.value)}
             placeholder="Write your message here..."
             autoComplete="off"
             className="flex-grow p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

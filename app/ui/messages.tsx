@@ -19,7 +19,6 @@ export default async function Messages({
           {name}
         </h1>
       
-        {/* Scrollable Messages */}
         <div className="overflow-y-auto max-h-[440px] space-y-4 pr-2 flex flex-col-reverse">
           <div>
           {messages.map((message, index) => (
@@ -29,16 +28,12 @@ export default async function Messages({
                 className={
                   'rounded-xl p-3 m-1 max-w-xs ' +
                   (message.sender === sender ? 'bg-blue-200' : 'bg-gray-200') +
-                  ' break-words' // Add this class to wrap text
+                  ' break-words'
                 }
               >
                   <p className="text-sm text-gray-700">{message.message_content}</p>
                 </div>
               </div>
-              {/* Optional timestamp or additional details */}
-              {/* <div className="flex justify-start">
-                <p className="text-xs text-gray-500 ml-12">3 hours ago</p>
-              </div> */}
             </div>
           ))}
           </div>

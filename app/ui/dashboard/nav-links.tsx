@@ -6,7 +6,6 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
-// Define links for each user type
 const graduateLinks = [
   { name: 'Үндсэн цэс', href: '/home', icon: HomeIcon },
   {
@@ -70,7 +69,6 @@ const adminLinks = [
 ];
 
 export default function NavLinks({ usertype }: { usertype: string }) {
-  // Determine the links to display based on user type
   const links = usertype === 'admin' ? adminLinks : (usertype === 'graduate' ? graduateLinks : instructorLinks);
 
   return (

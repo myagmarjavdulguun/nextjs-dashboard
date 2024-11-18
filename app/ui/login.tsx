@@ -24,7 +24,6 @@ export default function LoginPage() {
     if (response.ok) {
       router.push('/home');
     } else {
-      // Show error message if login fails
       const { error } = await response.json();
       setErrorMessage(error || 'An error occurred, please try again.');
     }

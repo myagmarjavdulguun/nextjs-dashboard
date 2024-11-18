@@ -15,14 +15,12 @@ export default function RequestButton({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Create FormData object
         const formData = new FormData();
         formData.append('instructor_id', instructor_id);
         formData.append('graduate_id', graduate_id);
         formData.append('status', 'pending');
         formData.append('query', query);
     
-        // Call the createChat function
         const result = await createRequest({}, formData);
     };
 

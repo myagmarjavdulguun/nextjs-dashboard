@@ -12,12 +12,10 @@ export default function AcceptRequestButton({
     const handleAccept = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Create FormData object
         const formData = new FormData();
         formData.append('request_id', request_id);
         formData.append('query', query);
     
-        // Call the createChat function
         const result = await acceptRequest({}, formData);
     };
 

@@ -10,12 +10,11 @@ export default function RegisterInstructorPage() {
   const [password, setPassword] = useState('');
   const [fieldOfStudy, setFieldOfStudy] = useState('');
   const [expertise, setExpertise] = useState('');
-  const [userType, setUserType] = useState('instructor'); // Default to 'instructor'
+  const [userType, setUserType] = useState('instructor'); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Prepare form data
     const formData = new FormData();
     formData.append('username', username);
     formData.append('first_name', firstName);
@@ -25,7 +24,6 @@ export default function RegisterInstructorPage() {
     formData.append('expertise', expertise);
     formData.append('user_type', userType);
 
-    // Call the action to create the new instructor
     const result = await createInstructor(formData);
 
     if (result?.message) {

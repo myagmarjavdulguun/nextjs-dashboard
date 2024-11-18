@@ -25,7 +25,6 @@ export default async function Page(props: {
     <div className="min-h-screen bg-gradient-to-r from-green-100 to-blue-200 p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl">
 
-        {/* Render Search Bar only for Graduates */}
         {data?.sessionData.usertype == 'instructor' || (
           <div className="space-y-4">
             <h2 className="text-2xl font-medium text-gray-800 mb-4 flex items-center gap-2">
@@ -37,7 +36,6 @@ export default async function Page(props: {
           </div>
         )}
 
-        {/* Create Training Button for Instructors */}
         {data?.sessionData.usertype !== 'instructor' || (
           <div className="mt-2 p-3 max-w-[300px] bg-green-500 rounded text-center">
             <Link href="/home/trainings/create">
@@ -51,7 +49,6 @@ export default async function Page(props: {
           Таны сургалтууд
         </h2>
 
-        {/* Show instructor's created trainings */}
         <table className="min-w-full text-gray-900">
           <thead className="bg-gray-200 text-left text-sm font-semibold">
             <tr>

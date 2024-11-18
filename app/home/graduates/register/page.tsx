@@ -16,7 +16,6 @@ export default function RegisterGraduautePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Prepare form data
     const formData = new FormData();
     formData.append('username', username);
     formData.append('first_name', firstName);
@@ -26,7 +25,6 @@ export default function RegisterGraduautePage() {
     formData.append('major', major);
     formData.append('user_type', userType);
 
-    // Call the action to create the new instructor
     const result = await createGraduate(formData);
 
     if (result?.message) {

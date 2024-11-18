@@ -14,14 +14,13 @@ export default function ParticipationButton({
 }) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form submitted");  // Check if this is logged
+        console.log("Form submitted"); 
 
         const formData = new FormData();
         formData.append('graduate_id', graduate_id);
         formData.append('training_id', training_id);
         formData.append('query', query);
 
-        // Simulate participation creation (you can remove this once the form is working)
         const result = await createParticipation({}, formData);
     };
 

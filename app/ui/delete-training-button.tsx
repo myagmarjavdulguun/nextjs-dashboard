@@ -13,12 +13,10 @@ export default function DeleteTrainingButton({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        // Create FormData object
         const formData = new FormData();
         formData.append('training_id', training_id);
         formData.append('query', query);
     
-        // Call the createChat function
         const result = await deleteTraining({}, formData);
     };
 

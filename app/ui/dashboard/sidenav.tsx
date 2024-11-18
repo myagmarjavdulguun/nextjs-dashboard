@@ -14,7 +14,6 @@ export default function SideNav({usertype} : {usertype: string}) {
       const response = await fetch('/api/auth/logout', { method: 'GET' });
 
       if (response.ok) {
-        // Redirect to login page after logging out
         window.location.reload();
       } else {
         console.error('Logout failed');

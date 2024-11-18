@@ -7,7 +7,7 @@ import {
   AcademicCapIcon,
   BriefcaseIcon,
   HomeIcon,
-  ChatBubbleLeftIcon, // Use this for Chat
+  ChatBubbleLeftIcon, 
 } from '@heroicons/react/24/outline';
 import Link from "next/link";
 
@@ -21,17 +21,13 @@ export default async function Page(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  // Get the session data
   const data = await isLoggedIn();
   const user = await getUser(data?.sessionData.username, data?.sessionData.usertype);
   const username = data ? data.sessionData.username : '';
 
-  // Fetch instructors data
   const acceptedInstructors = await getAcceptedInstructors(username);
   const requestedInstructors = await getRequestedInstructors(username);
   const otherInstructors = await getOtherInstructors(username);
-
-  // Function to filter instructors based on the search term
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -41,7 +37,6 @@ export default async function Page(props: {
           Багш
         </h1>
 
-        {/* Search Bar Section (Previously "Other Instructors") */}
         <section className="mt-12">
           <h2 className="text-2xl font-medium text-gray-700 mb-4 flex items-center">
             <UserGroupIcon className="w-6 h-6 text-blue-600 mr-2" />
@@ -53,7 +48,6 @@ export default async function Page(props: {
           <Table query={query} graduate_id={user?.graduate_id} />
         </section>
 
-        {/* Accepted Instructors Section */}
         <section>
           <h2 className="text-2xl font-medium text-gray-700 mb-4 flex items-center">
             <UserGroupIcon className="w-6 h-6 text-blue-600 mr-2" />
@@ -98,7 +92,6 @@ export default async function Page(props: {
           </div>
         </section>
 
-        {/* Requested Instructors Section */}
         <section className="mt-12">
           <h2 className="text-2xl font-medium text-gray-700 mb-4 flex items-center">
             <UserGroupIcon className="w-6 h-6 text-blue-600 mr-2" />

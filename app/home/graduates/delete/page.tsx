@@ -1,9 +1,7 @@
-// pages/admin/instructors.tsx (Server-side component)
 import DeleteGraduateButton from '@/app/ui/delete-graduate-button';
 import { fetchGraduates } from '@/app/lib/data';
 
 export default async function GraduatesPage() {
-  // Fetch all instructors
   const graduates = await fetchGraduates();
 
   return (
@@ -29,7 +27,6 @@ export default async function GraduatesPage() {
               <td className="px-4 py-2">{graduate.field_of_study}</td>
               <td className="px-4 py-2">{graduate.major}</td>
               <td className="px-4 py-2">
-                {/* Pass instructorId for the deletion button */}
                 <DeleteGraduateButton graduate_id={graduate.graduate_id} />
               </td>
             </tr>

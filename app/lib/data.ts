@@ -17,7 +17,6 @@ type Message = {
   message_content: string;
   sender: string;
   sent_date: Date;
-  // Add other fields as needed
 };
 
 const client = await db.connect();
@@ -168,7 +167,6 @@ export async function getMessages(graduate_id: string, instructor_id: string) {
 
 export async function getOtherInstructors(username: string) {
   try {
-    // Fetch instructors based on the provided username and accepted requests
     const instructors = await client.sql`
       SELECT *
       FROM instructors
@@ -180,7 +178,6 @@ export async function getOtherInstructors(username: string) {
       );
     `;
     
-    // Return the results, ensure it's an empty array if no instructors found
     return instructors.rows || [];
   } catch (error) {
     console.error('Database Error:', error);
@@ -190,7 +187,6 @@ export async function getOtherInstructors(username: string) {
 
 export async function getRequestedInstructors(username: string) {
   try {
-    // Fetch instructors based on the provided username and accepted requests
     const instructors = await client.sql`
       SELECT i.*, r.request_id
       FROM requests r
@@ -199,7 +195,6 @@ export async function getRequestedInstructors(username: string) {
       WHERE g.username = ${username} AND r.status = 'pending';
     `;
     
-    // Return the results, ensure it's an empty array if no instructors found
     return instructors.rows || [];
   } catch (error) {
     console.error('Database Error:', error);
@@ -226,7 +221,6 @@ export async function getAcceptedGraduates(username: string) {
 
 export async function getAcceptedInstructors(username: string) {
   try {
-    // Fetch instructors based on the provided username and accepted requests
     const instructors = await client.sql`
       SELECT i.*, r.*
       FROM requests r
@@ -235,7 +229,6 @@ export async function getAcceptedInstructors(username: string) {
       WHERE g.username = ${username} AND r.status = 'accepted';
     `;
     
-    // Return the results, ensure it's an empty array if no instructors found
     return instructors.rows || [];
   } catch (error) {
     console.error('Database Error:', error);
@@ -263,14 +256,12 @@ export async function getUser(username: string, usertype: string) {
 }
 
 export async function isLoggedIn() {
-  // Retrieve the session cookie
   const sessionCookie = (await cookies()).get('session')?.value;
 
   let sessionData = null;
   if (sessionCookie) {
     try {
-      // Decrypt and parse the cookie
-      const decryptedData = sessionCookie; // Simulate decrypt here
+      const decryptedData = sessionCookie; 
       sessionData = JSON.parse(decryptedData);
     } catch (error) {
       console.error("Failed to decrypt or parse session data", error);
@@ -279,28 +270,22 @@ export async function isLoggedIn() {
   }
 
   if (sessionData) {
-    // Fetch the user from the database
     const user = await getUser(sessionData.username, sessionData.usertype);
 
     if (user) {
-      // Compare the password from session data with the password stored in the database
       const isPasswordMatch = await bcrypt.compare(sessionData.password, user.password);
 
       if (isPasswordMatch) {
-        // If the password matches, return session data
         return { sessionData };
       } else {
-        // If the password doesn't match, return null (invalid session)
         console.error("Password mismatch for user:", sessionData.username);
         return null;
       }
     } else {
-      // If no user found, return null
       console.error("User not found:", sessionData.username);
       return null;
     }
   } else {
-    // Return null if no session data
     return null;
   }
 }
@@ -329,15 +314,7 @@ export async function fetchInstructors() {
 
 export async function fetchRevenue() {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
@@ -506,7 +483,6 @@ export async function fetchInvoiceById(id: string) {
 
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
-      // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
 

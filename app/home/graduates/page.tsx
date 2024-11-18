@@ -24,12 +24,10 @@ import GraduateTable from "@/app/ui/graduate-table";
     const searchParams = await props.searchParams;
     const query = searchParams?.query || "";
   
-    // Get session data
     const data = await isLoggedIn();
     const user = await getUser(data?.sessionData.username, data?.sessionData.usertype);
     const instructor_id = user?.instructor_id;
   
-    // Fetch incoming and accepted requests for the instructor
     const incomingRequests = await getIncomingRequestsForInstructor(instructor_id);
     const acceptedGraduates = await getAcceptedGraduates(data?.sessionData.username);
     const graduates = await getFilteredGraduates(query);
@@ -42,7 +40,6 @@ import GraduateTable from "@/app/ui/graduate-table";
             Төгсөгчийн хүсэлтүүд ба хайлт
           </h1>
   
-          {/* Search Section */}
           <section className="mb-12">
             <h2 className="text-2xl font-medium text-gray-700 mb-4 flex items-center">
               <UserGroupIcon className="w-6 h-6 text-blue-600 mr-2" />
@@ -52,7 +49,6 @@ import GraduateTable from "@/app/ui/graduate-table";
             <GraduateTable graduates={graduates} />
           </section>
   
-          {/* Incoming Requests Section */}
           <section className="mt-12">
             <h2 className="text-2xl font-medium text-gray-700 mb-4 flex items-center">
               <UserGroupIcon className="w-6 h-6 text-blue-600 mr-2" />
@@ -90,7 +86,6 @@ import GraduateTable from "@/app/ui/graduate-table";
             </div>
           </section>
   
-          {/* Accepted Requests Section */}
           <section className="mt-12">
             <h2 className="text-2xl font-medium text-gray-700 mb-4 flex items-center">
               <UserGroupIcon className="w-6 h-6 text-blue-600 mr-2" />

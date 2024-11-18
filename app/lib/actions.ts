@@ -4,22 +4,81 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation'; 
+import bcrypt from 'bcrypt';
+import { cookies } from 'next/headers';
+
+export async function changeSkillsToLearn(formData: { get?: any; }) {
+  const graduate_id = formData.get('graduate_id').toString();
+  const skills_to_learn = formData.get('skills_to_learn').toString();
+
+  try {
+    await sql`UPDATE graduates SET skills_to_learn = ${skills_to_learn} WHERE graduate_id::TEXT = ${graduate_id}`;
+  } catch (error) {
+    console.error('Error deleting graduate and related data:', error);
+    return { message: 'Failed to change skills to learn' };
+  }
+}
+
+export async function changePassword(formData: { get?: any; }) {
+  const username = formData.get("username")?.toString();
+  const usertype = formData.get("usertype")?.toString();
+  const old_password = formData.get("old_password")?.toString() || "";
+  const new_password = formData.get("new_password")?.toString() || "";
+
+  try {
+    const old_hashed_password =
+      usertype === "graduate"
+        ? (
+            await sql`SELECT password FROM graduates WHERE username = ${username}`
+          ).rows[0].password
+        : (
+            await sql`SELECT password FROM instructors WHERE username = ${username}`
+          ).rows[0].password;
+
+    const passwordsMatch = await bcrypt.compare(old_password, old_hashed_password);
+
+    if (passwordsMatch) {
+      const new_hashed_password = await bcrypt.hash(new_password, 10);
+
+      if (usertype === "graduate") {
+        await sql`UPDATE graduates SET password = ${new_hashed_password} WHERE username = ${username}`;
+      } else if (usertype === "instructor") {
+        await sql`UPDATE instructors SET password = ${new_hashed_password} WHERE username = ${username}`;
+      }
+
+      (await cookies()).delete('session');
+
+      return {
+        success: true,
+        message: "Password updated successfully.",
+      };
+    } else {
+      return {
+        success: false,
+        message: "Incorrect old password.",
+      };
+    }
+  } catch (error) {
+    console.error("Database error:", error);
+    return {
+      success: false,
+      message: "Database Error: Failed to update the password.",
+    };
+  }
+}
 
 export async function deleteGraduate(graduate_id: string) {
     try {
-      // Delete related trainings first
       await sql`
         DELETE FROM participations
         WHERE graduate_id::TEXT = ${graduate_id};
       `;
   
-      // Delete related requests (assuming requests are tied to a training)
       await sql`
         DELETE FROM requests
         WHERE graduate_id::TEXT = ${graduate_id};
       `;
   
-      // Delete the instructor
       await sql`
         DELETE FROM graduates
         WHERE graduate_id::TEXT = ${graduate_id};
@@ -36,19 +95,16 @@ export async function deleteGraduate(graduate_id: string) {
 
 export async function deleteInstructor(instructor_id: string) {
     try {
-      // Delete related trainings first
       await sql`
         DELETE FROM trainings
         WHERE instructor_id::TEXT = ${instructor_id};
       `;
   
-      // Delete related requests (assuming requests are tied to a training)
       await sql`
         DELETE FROM requests
         WHERE instructor_id::TEXT = ${instructor_id};
       `;
   
-      // Delete the instructor
       await sql`
         DELETE FROM instructors
         WHERE instructor_id::TEXT = ${instructor_id};
@@ -73,7 +129,6 @@ export async function createGraduate(formData: FormData) {
     const userType = formData.get('user_type')?.toString(); 
 
     try {
-        // Check if the instructor already exists (based on username or email)
         const existingGraduate = await sql`
           SELECT 1 FROM graduates WHERE username = ${username};
         `;
@@ -82,7 +137,6 @@ export async function createGraduate(formData: FormData) {
           return { message: 'Graduate already exists with this username.' };
         }
     
-        // Insert the new instructor into the database
         await sql`
           INSERT INTO graduates (username, first_name, last_name, password, field_of_study, major, user_type)
           VALUES (${username}, ${firstName}, ${lastName}, ${password}, ${fieldOfStudy}, ${major}, ${userType});
@@ -102,10 +156,9 @@ export async function createInstructor(formData: FormData) {
     const password = formData.get('password')?.toString();
     const fieldOfStudy = formData.get('field_of_study')?.toString();
     const expertise = formData.get('expertise')?.toString();
-    const userType = formData.get('user_type')?.toString();  // Assuming user_type will be either 'admin', 'instructor', etc.
+    const userType = formData.get('user_type')?.toString(); 
   
     try {
-      // Check if the instructor already exists (based on username or email)
       const existingInstructor = await sql`
         SELECT 1 FROM instructors WHERE username = ${username};
       `;
@@ -114,7 +167,6 @@ export async function createInstructor(formData: FormData) {
         return { message: 'Instructor already exists with this username.' };
       }
   
-      // Insert the new instructor into the database
       await sql`
         INSERT INTO instructors (username, first_name, last_name, password, field_of_study, expertise, user_type)
         VALUES (${username}, ${firstName}, ${lastName}, ${password}, ${fieldOfStudy}, ${expertise}, ${userType});
@@ -161,7 +213,7 @@ export async function createTraining(prevState: State, formData: FormData) {
             VALUES (${title}, ${description}, ${start_date}, ${end_date}, ${location}, ${price}, ${instructor_id});
         `;
     } catch (error) {
-        console.error('Database error:', error);  // Log more specific error
+        console.error('Database error:', error);  
         return {
             message: 'Database Error: Failed to create training.',
         };
@@ -226,7 +278,6 @@ export async function deleteRequest(prevState: State, formData: FormData) {
     console.log('formdata: ', graduate_id, training_id, query);
 
     try {
-        // Check if the participation already exists
         const existingParticipation = await sql`
             SELECT 1
             FROM participations
@@ -234,24 +285,21 @@ export async function deleteRequest(prevState: State, formData: FormData) {
         `;
 
         if (existingParticipation.rowCount > 0) {
-            // If a record exists, return a message
             return { message: 'Participation already exists for this graduate and training.' };
         }
 
-        // Proceed with the insertion if no existing participation found
         await sql`
             INSERT INTO participations (graduate_id, training_id)
             VALUES (${graduate_id}, ${training_id});
         `;
 
     } catch (error) {
-        console.error('Database error:', error);  // Log more specific error
+        console.error('Database error:', error); 
         return {
             message: 'Database Error: Failed to Create participation.',
         };
     }
 
-    // Revalidate the path to reflect the changes
     revalidatePath('/home/trainings?query=' + query);
 }
 
@@ -267,7 +315,7 @@ export async function createRequest(prevState: State, formData: FormData) {
             VALUES (${graduate_id}, ${instructor_id}, ${status});
         `;
     } catch (error) {
-        console.error('Database error:', error);  // Log more specific error
+        console.error('Database error:', error); 
         return {
           message: 'Database Error: Failed to Create request.',
         };
@@ -289,7 +337,7 @@ export async function createChat(prevState: State, formData: FormData) {
         VALUES (${graduate_id}, ${instructor_id}, ${sender}, ${message}, ${date});
       `;
     } catch (error) {
-      console.error('Database error:', error);  // Log more specific error
+      console.error('Database error:', error); 
       return {
         message: 'Database Error: Failed to Create message.',
       };
@@ -333,14 +381,12 @@ export type State = {
 };
    
 export async function createInvoice(prevState: State, formData: FormData) {
-    // Validate form using Zod
     const validatedFields = CreateInvoice.safeParse({
         customerId: formData.get('customerId'),
         amount: formData.get('amount'),
         status: formData.get('status'),
     });
    
-    // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
@@ -348,25 +394,21 @@ export async function createInvoice(prevState: State, formData: FormData) {
         };
     }
    
-    // Prepare data for insertion into the database
     const { customerId, amount, status } = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
    
-    // Insert data into the database
     try {
         await sql`
             INSERT INTO invoices (customer_id, amount, status, date)
             VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
     } catch (error) {
-      // If a database error occurs, return a more specific error.
         return {
             message: 'Database Error: Failed to Create Invoice.',
         };
     }
    
-    // Revalidate the cache for the invoices page and redirect the user.
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }

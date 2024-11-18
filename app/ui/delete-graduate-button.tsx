@@ -1,4 +1,3 @@
-// components/DeleteInstructorButton.tsx (Client-side component)
 'use client';
 
 import { deleteGraduate } from "../lib/actions";
