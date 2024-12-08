@@ -1,23 +1,21 @@
 import { getParticipations, getTrainings, isLoggedIn } from "@/app/lib/data";
 import TrainingDetails from "@/app/ui/trainings-detail";
-import { notFound } from "next/navigation";  // Importing next/navigation for notFound() handling
+import { notFound } from "next/navigation";
 
-export default async function TrainingDetailsPage({ params }: { params: { id: string } }) {
-  // Destructure training_id from params
-  const training_id = params.id;
+export default async function TrainingDetailsPage({ params }: { params: Promise<{
+  id: string;
+}>; }) {
+  const training_id = (await params).id;
 
-  // Fetch login data
   const data = await isLoggedIn();
   
-  // Fetch training and participations data in parallel
   const [training, participations] = await Promise.all([
     getTrainings(training_id),
     getParticipations(training_id),
   ]);
 
-  // If no training found, trigger 404 page
   if (!training) {
-    notFound();  // Automatically redirects to a 404 page if no training is found
+    notFound(); 
   }
 
   return (
