@@ -3,7 +3,7 @@ import TrainingDetails from "@/app/ui/trainings-detail";
 
 export default async function TrainingDetailsPage({ params }: { params: { training_id: string } }) {
   const data = await isLoggedIn();
-  const { training_id } = await params;
+  const { training_id } = params;
 
   const training = await getTrainings(training_id);
   const participations = await getParticipations(training_id);
