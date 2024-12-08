@@ -2,9 +2,9 @@ import { getParticipations, getTrainings, isLoggedIn } from "@/app/lib/data";
 import TrainingDetails from "@/app/ui/trainings-detail";
 import { notFound } from "next/navigation";  // Importing next/navigation for notFound() handling
 
-export default async function TrainingDetailsPage({ params }: { params: { training_id: string } }) {
+export default async function TrainingDetailsPage({ params }: { params: { id: string } }) {
   // Destructure training_id from params
-  const { training_id } = params;
+  const training_id = params.id;
 
   // Fetch login data
   const data = await isLoggedIn();
