@@ -1,6 +1,7 @@
 import { getParticipations, getTrainings, isLoggedIn } from "@/app/lib/data";
 import TrainingDetails from "@/app/ui/trainings-detail";
 
+// Defining the correct interface for params
 interface Params {
   training_id: string;
 }
@@ -18,7 +19,11 @@ export default async function TrainingDetailsPage({ params }: { params: Params }
 
   return (
     <div className="container mx-auto mt-6 p-4">
-      <TrainingDetails training={training[0]} participations={participations} usertype={data?.sessionData.usertype} />
+      <TrainingDetails 
+        training={training[0]} 
+        participations={participations} 
+        usertype={data?.sessionData.usertype} 
+      />
     </div>
   );
 }
