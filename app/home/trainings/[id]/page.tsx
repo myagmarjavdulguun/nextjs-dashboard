@@ -1,9 +1,9 @@
 import { getParticipations, getTrainings, isLoggedIn } from "@/app/lib/data";
 import TrainingDetails from "@/app/ui/trainings-detail";
 
-export default async function TrainingDetailsPage({ params }: { params: { training_id: any; }; }) {
+export default async function TrainingDetailsPage({ params }: { params: { id: string } }) {
   const data = await isLoggedIn();
-  const training_id = params.training_id;
+  const training_id = params.id;
 
   const training = await getTrainings(training_id);
   const participations = await getParticipations(training_id);
