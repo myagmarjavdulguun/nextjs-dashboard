@@ -1,6 +1,7 @@
 'use client';
 
-import ParticipationButton from "./create-participation-form";
+import { useRouter } from 'next/navigation';
+import ParticipationButton from './create-participation-form';
 
 export default function TrainingTable({
   trainings,
@@ -9,8 +10,10 @@ export default function TrainingTable({
 }: {
   trainings: Array<any>;
   query: string;
-    graduate_id: string;
+  graduate_id: string;
 }) {
+  const router = useRouter();
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -21,6 +24,7 @@ export default function TrainingTable({
                 <th className="px-4 py-5">Багш</th>
                 <th className="px-3 py-5">Сургалтын нэр</th>
                 <th className="px-3 py-5">Тайлбар</th>
+                <th className="px-3 py-5">Салбар</th>
                 <th className="px-3 py-5">Эхлэх огноо</th>
                 <th className="px-3 py-5">Дуусах огноо</th>
                 <th className="px-3 py-5">Байршил</th>
@@ -34,24 +38,27 @@ export default function TrainingTable({
                   key={training.training_id}
                   className="border-b text-sm transition-all"
                 >
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-1 py-1">
                     {training.first_name} {training.last_name}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">{training.title}</td>
-                  <td className="px-3 py-3">{training.description}</td>
-                  <td className="px-3 py-3">
+                  <td className="whitespace-nowrap px-1 py-1 cursor-pointer hover:bg-gray-100"
+                    onClick={() => router.push(`/home/trainings/${training.training_id}`)}
+                  >{training.title}</td>
+                  <td className="px-1 py-1">{training.description.length < 40 ? training.description : training.description.substring(0, 40) + '...'}</td>
+                  <td className="px-1 py-1">{training.field_of_study}</td>
+                  <td className="px-1 py-1">
                     {new Date(training.start_date).toLocaleDateString('en-US')}
                   </td>
-                  <td className="px-3 py-3">
+                  <td className="px-1 py-1">
                     {new Date(training.end_date).toLocaleDateString('en-US')}
                   </td>
-                  <td className="px-3 py-3">{training.location}</td>
-                  <td className="px-3 py-3">{training.price}₮</td>
-                  <td className="px-3 py-3">
-                    <ParticipationButton 
-                        graduate_id={graduate_id}
-                        training_id={training.training_id}
-                        query={query}
+                  <td className="px-1 py-1">{training.location}</td>
+                  <td className="px-1 py-1">{training.price}₮</td>
+                  <td className="px-1 py-1">
+                    <ParticipationButton
+                      graduate_id={graduate_id}
+                      training_id={training.training_id}
+                      query={query}
                     />
                   </td>
                 </tr>

@@ -75,7 +75,7 @@ export default async function Page(props: {
       <div className="w-80 bg-white p-6 rounded-lg shadow-lg mr-6 flex flex-col">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
           <ChatBubbleLeftIcon className="h-6 w-6 text-purple-600" />
-          {userType === "graduate" ? "Instructors" : "Graduates"}
+          {userType === "graduate" ? "Багш нар" : "Төгсөгчид"}
         </h1>
 
         <div className="overflow-y-auto flex-1 space-y-4 max-h-lvh">

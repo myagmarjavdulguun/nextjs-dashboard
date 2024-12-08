@@ -21,6 +21,25 @@ type Message = {
 
 const client = await db.connect();
 
+export async function getParticipations(training_id: string) {
+  try {
+    const data = await sql`
+      SELECT * 
+      FROM graduates
+      WHERE graduate_id::TEXT IN (
+        SELECT graduate_id
+        FROM participations
+        WHERE training_id::TEXT = ${training_id}
+      );
+    `;
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch participations.');
+  }
+}
+
 export async function getGraduateNumber() {
   try {
     const data = await sql`
@@ -96,20 +115,28 @@ export async function getIncomingRequestsForInstructor(instructor_id: string) {
   }
 }
 
-export async function getTrainings(query: string) {
+export async function getTrainings(training_id: string | null = null) {
   try {
-    const trainings = await client.sql`
-      SELECT t.*, i.*
-      FROM trainings t
-      INNER JOIN instructors i ON i.instructor_id::TEXT = t.instructor_id::TEXT;
-    `;
+    const data = training_id
+      ? await client.sql`
+          SELECT t.*, i.*
+          FROM trainings t
+          INNER JOIN instructors i ON i.instructor_id::TEXT = t.instructor_id::TEXT
+          WHERE t.training_id::TEXT = ${training_id};
+        `
+      : await client.sql`
+          SELECT t.*, i.*
+          FROM trainings t
+          INNER JOIN instructors i ON i.instructor_id::TEXT = t.instructor_id::TEXT;
+        `;
 
-    return trainings.rows;
+    return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch training.');
+    throw new Error('Failed to fetch trainings.');
   }
 }
+
 
 export async function getInstructorTrainings(instructor_id: string) {
   try {
@@ -261,7 +288,7 @@ export async function isLoggedIn() {
   let sessionData = null;
   if (sessionCookie) {
     try {
-      const decryptedData = sessionCookie; 
+      const decryptedData = atob(sessionCookie); 
       sessionData = JSON.parse(decryptedData);
     } catch (error) {
       console.error("Failed to decrypt or parse session data", error);

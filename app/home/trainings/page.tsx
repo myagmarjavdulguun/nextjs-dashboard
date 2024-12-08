@@ -2,6 +2,7 @@ import { getFilteredTrainings, getGraduateTrainings, getInstructorTrainings, get
 import DeleteParticipation from '@/app/ui/delete-participation-button';
 import DeleteTrainingButton from '@/app/ui/delete-training-button';
 import Search from '@/app/ui/search';
+import TrainingTitle from '@/app/ui/training-title';
 import TrainingTable from '@/app/ui/trainings-table';
 import { PlayCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -19,7 +20,6 @@ export default async function Page(props: {
   const user = await getUser(data?.sessionData.username, data?.sessionData.usertype);
   const trainings = await getFilteredTrainings(query);
   const myTrainings = data?.sessionData.usertype === 'graduate' ? await getGraduateTrainings(user?.graduate_id) : await getInstructorTrainings(user?.instructor_id);
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-100 to-blue-200 p-6">
@@ -55,9 +55,11 @@ export default async function Page(props: {
               <th className="px-4 py-5">Багш</th>
               <th className="px-3 py-5">Сургалтын нэр</th>
               <th className="px-3 py-5">Тайлбар</th>
+              <th className="px-3 py-5">Салбар</th>
               <th className="px-3 py-5">Эхлэх огноо</th>
               <th className="px-3 py-5">Дуусах огноо</th>
               <th className="px-3 py-5">Байршил</th>
+              <th className="px-3 py-5">Суудлын тоо</th>
               <th className="px-3 py-5">Төлбөр</th>
               <th className="px-3 py-5">Хамрагдах</th>
             </tr>
@@ -68,20 +70,22 @@ export default async function Page(props: {
                 key={training.training_id}
                 className="border-b text-sm transition-all"
               >
-                <td className="whitespace-nowrap px-3 py-3">
+                <td className="whitespace-nowrap px-1 py-1">
                   {training.first_name} {training.last_name}
                 </td>
-                <td className="whitespace-nowrap px-3 py-3">{training.title}</td>
-                <td className="px-3 py-3">{training.description}</td>
-                <td className="px-3 py-3">
+                <TrainingTitle title={training.title} training_id={training.training_id} />
+                <td className="px-1 py-1">{training.description.length < 40 ? training.description : training.description.substring(0, 40) + '...'}</td>
+                <td className="px-1 py-1">{training.field_of_study}</td>
+                <td className="px-1 py-1">
                   {new Date(training.start_date).toLocaleDateString()}
                 </td>
-                <td className="px-3 py-3">
+                <td className="px-1 py-1">
                   {new Date(training.end_date).toLocaleDateString()}
                 </td>
-                <td className="px-3 py-3">{training.location}</td>
-                <td className="px-3 py-3">{training.price == 0 ? 'Үнэгүй' : training.price + '₮'}</td>
-                <td className="px-3 py-3">
+                <td className="px-1 py-1">{training.location}</td>
+                <td className="px-1 py-1">{training.max_participants}</td>
+                <td className="px-1 py-1">{training.price == 0 ? 'Үнэгүй' : training.price + '₮'}</td>
+                <td className="px-1 py-1">
                   {data?.sessionData.usertype == 'instructor' ? (
                     <DeleteTrainingButton 
                       training_id={training.training_id}

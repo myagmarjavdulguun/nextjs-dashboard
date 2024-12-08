@@ -11,6 +11,7 @@ export default function CreateTrainingForm({ instructor_id }: { instructor_id: s
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [location, setLocation] = useState('');
+    const [maxParticipants, setMaxParticipants] = useState(0);
     const [price, setPrice] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -22,6 +23,7 @@ export default function CreateTrainingForm({ instructor_id }: { instructor_id: s
         formData.append('start_date', startDate);
         formData.append('end_date', endDate);
         formData.append('location', location);
+        formData.append('max_participants', maxParticipants.toString());
         formData.append('price', price);
         formData.append('instructor_id', instructor_id);
 
@@ -87,6 +89,18 @@ export default function CreateTrainingForm({ instructor_id }: { instructor_id: s
                     id="location"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
+                    required
+                    className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="location" className="block text-sm font-medium text-gray-700">Суудлын тоо</label>
+                <input
+                    type="number"
+                    id="max_participants"
+                    value={maxParticipants}
+                    onChange={(e) => setMaxParticipants(Number(e.target.value))}
                     required
                     className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
                 />

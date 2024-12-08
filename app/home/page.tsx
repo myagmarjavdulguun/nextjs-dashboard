@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getInstructorTrainings, getGraduateTrainings, isLoggedIn, getGraduateNumber, getInstructorNumber, getTrainingNumber, getActiveTrainingNumber } from "../lib/data";
 import { getUser } from "../lib/data";
 import { UserIcon, BriefcaseIcon, PencilIcon } from '@heroicons/react/24/outline';
+import HomeTraining from "../ui/home-page-training";
 
 export default async function Page() {
   const data = await isLoggedIn();
@@ -24,21 +25,7 @@ export default async function Page() {
             <div className="space-y-4">
               {currentTrainings.length > 0 ? (
                 currentTrainings.map((training, index) => (
-                  <div key={index} className="bg-blue-50 p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
-                    <h3 className="text-xl font-medium text-gray-800 mb-4">{training.title}</h3>
-                    <p className="text-sm text-gray-600">
-                      Багш: {training.first_name + ' ' + training.last_name}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-semibold">Эхлэх огноо:</span> {new Date(training.start_date).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-semibold">Дуусах огноо:</span> {new Date(training.end_date).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-semibold">Байршил:</span> {training.location}
-                    </p>
-                  </div>
+                  <HomeTraining training={training} />
                 ))
               ) : (
                 <p className="text-sm text-gray-600">Сургалт олдсонгүй.</p>

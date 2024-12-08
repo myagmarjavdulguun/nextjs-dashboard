@@ -52,7 +52,7 @@ const adminLinks = [
     icon: UserGroupIcon,
   },
   {
-    name: 'Багш устгах',
+    name: 'Багш нарын жагсаалт',
     href: '/home/instructors/delete',
     icon: UserGroupIcon,
   },
@@ -62,7 +62,7 @@ const adminLinks = [
     icon: UserGroupIcon,
   },
   {
-    name: 'Төгсөгч устгах',
+    name: 'Төгсөгчдийн жагсаалт',
     href: '/home/graduates/delete',
     icon: UserGroupIcon,
   },

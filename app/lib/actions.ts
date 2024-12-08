@@ -206,13 +206,14 @@ export async function createTraining(prevState: State, formData: FormData) {
     const start_date = formData.get('start_date')?.toString();
     const end_date = formData.get('end_date')?.toString();
     const location = formData.get('location')?.toString();
+    const max_participants = formData.get('max_participants')?.toString();
     const price = formData.get('price')?.toString();
     const instructor_id = formData.get('instructor_id')?.toString();
 
     try {
         await sql`
-            INSERT INTO trainings (title, description, start_date, end_date, location, price, instructor_id) 
-            VALUES (${title}, ${description}, ${start_date}, ${end_date}, ${location}, ${price}, ${instructor_id});
+            INSERT INTO trainings (title, description, start_date, end_date, location, max_participants, price, instructor_id) 
+            VALUES (${title}, ${description}, ${start_date}, ${end_date}, ${location}, ${max_participants}, ${price}, ${instructor_id});
         `;
     } catch (error) {
         console.error('Database error:', error);  

@@ -11,9 +11,9 @@ export default function LoginPage() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const username = formData.get('username');
+    const username = formData.get('username')?.toString();
     const password = formData.get('password');
-    const usertype = formData.get('usertype');
+    const usertype = username?.substring(0, 4) == 'inst' ? 'instructor' : (username?.substring(0, 4) == 'grad' ? 'graduate' : 'admin');
 
     const response = await fetch('/api/auth/login', {
       method: 'POST',
@@ -74,27 +74,6 @@ export default function LoginPage() {
             required
             minLength={6}
           />
-        </div>
-
-        {/* User Type Selection */}
-        <div>
-          <label
-            htmlFor="usertype"
-            className="block text-xs font-medium text-gray-900 mb-2"
-          >
-            Та аль хэрэглэгч вэ?
-          </label>
-          <select
-            id="usertype"
-            name="usertype"
-            className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="graduate" defaultChecked>
-              Төгсөгч
-            </option>
-            <option value="instructor">Багш</option>
-            <option value="admin">Админ</option>
-          </select>
         </div>
 
         {/* Login Button */}

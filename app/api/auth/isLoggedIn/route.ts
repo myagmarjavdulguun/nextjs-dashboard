@@ -1,6 +1,16 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+// Simple Base64 decoding function
+function simpleDecode(encodedText: string) {
+  try {
+    return atob(encodedText);  // Base64 decode
+  } catch (error) {
+    console.error("Failed to decode data", error);
+    return null;
+  }
+}
+
 export async function GET() {
   try {
     const sessionCookie = (await cookies()).get('session')?.value;
@@ -8,10 +18,13 @@ export async function GET() {
     let sessionData = null;
     if (sessionCookie) {
       try {
-        const decryptedData = sessionCookie; 
-        sessionData = JSON.parse(decryptedData);
+        // Decode Base64 and then parse the JSON
+        const decodedData = simpleDecode(sessionCookie);
+        if (decodedData) {
+          sessionData = JSON.parse(decodedData);
+        }
       } catch (error) {
-        console.error("Failed to decrypt or parse session data", error);
+        console.error("Failed to decode or parse session data", error);
         sessionData = null;
       }
     }
