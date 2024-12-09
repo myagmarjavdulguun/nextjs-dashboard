@@ -21,10 +21,8 @@ export default async function Page() {
           {user.user_type === "graduate" ? "Ур чадвар болон Нууц үг шинэчлэх" : "Нууц үг шинэчлэх"}
         </h1>
 
-        {/* Password Change Section */}
         <ChangePasswordForm username={data?.sessionData.username} usertype={data?.sessionData.usertype} />
 
-        {/* Skills to Learn Section (Graduates Only) */}
         {user.user_type === "graduate" && (
           <ChangeSkillsToLearn graduate_id={user.graduate_id} skills_to_learn={user.skills_to_learn} />
         )}

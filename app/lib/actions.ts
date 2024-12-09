@@ -225,6 +225,38 @@ export async function createTraining(prevState: State, formData: FormData) {
     revalidatePath('/home/trainings');
 }
 
+export async function editTraining(prevState: State, formData: FormData) {
+  const training_id = formData.get('training_id')?.toString();
+  const title = formData.get('title')?.toString();
+  const description = formData.get('description')?.toString();
+  const start_date = formData.get('start_date')?.toString();
+  const end_date = formData.get('end_date')?.toString();
+  const location = formData.get('location')?.toString();
+  const max_participants = formData.get('max_participants')?.toString();
+  const price = formData.get('price')?.toString();
+
+  try {
+    await sql`
+      UPDATE trainings
+      SET
+        title = ${title},
+        description = ${description},
+        start_date = ${start_date},
+        end_date = ${end_date},
+        location = ${location},
+        max_participants = ${max_participants},
+        price = ${price}
+      WHERE
+        training_id = ${training_id}
+    `;
+  } catch (error) {
+    console.error('Database error:', error);  
+    return {
+        message: 'Database Error: Failed to edit training.',
+    };
+  }
+}
+
 export async function deleteParticipation(formData: FormData) {
     const graduate_id = formData.get('graduate_id')?.toString();
     const training_id = formData.get('training_id')?.toString();

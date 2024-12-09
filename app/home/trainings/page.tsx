@@ -61,7 +61,7 @@ export default async function Page(props: {
               <th className="px-3 py-5">Байршил</th>
               <th className="px-3 py-5">Суудлын тоо</th>
               <th className="px-3 py-5">Төлбөр</th>
-              <th className="px-3 py-5">Хамрагдах</th>
+              <th className="px-3 py-5">Үйлдэл</th>
             </tr>
           </thead>
           <tbody className="bg-white">
@@ -87,10 +87,16 @@ export default async function Page(props: {
                 <td className="px-1 py-1">{training.price == 0 ? 'Үнэгүй' : training.price + '₮'}</td>
                 <td className="px-1 py-1">
                   {data?.sessionData.usertype == 'instructor' ? (
-                    <DeleteTrainingButton 
-                      training_id={training.training_id}
-                      query={query}
-                    />
+                    <div className='flex flex-dir-row gap-2'>
+                      <DeleteTrainingButton 
+                        training_id={training.training_id}
+                        query={query}
+                      />
+                      <Link 
+                        href={`/home/trainings/${training.training_id}/edit`}
+                        className='p-2 rounded-lg bg-yellow-200'
+                      >Өөрчлөх</Link>
+                    </div>
                   ) : (
                     <DeleteParticipation
                       graduate_id={user?.graduate_id}
