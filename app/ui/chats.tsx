@@ -33,6 +33,7 @@ export default function MessagesClient({
       }
     };
 
+    fetchMessages();
     const interval = setInterval(fetchMessages, 2000); // Fetch new messages every 5 seconds
 
     return () => clearInterval(interval); // Cleanup on component unmount
